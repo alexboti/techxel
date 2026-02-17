@@ -1,0 +1,18 @@
+# Logs
+error_log
+error_log-*
+_logs/
+logs/
+logss/
+
+# Agent/IDE files
+.agent/
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Editor files
+*.swp
+*.swo
+*~

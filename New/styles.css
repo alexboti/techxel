@@ -1,0 +1,120 @@
+@charset "windows-1251";
+a.menu
+{
+text-decoration: none;
+font-family: tahoma;
+font-size: 11px;
+font-weight: bold;
+color: #6B8E2E;
+}
+a.menu:hover
+{
+text-decoration: underline;
+font-family: tahoma;
+font-size: 11px;
+font-weight: bold;
+color: #6B8E2E;
+}
+a.menu:visited
+{
+font-family: tahoma;
+font-size: 11px;
+font-weight: bold;
+color: #6B8E2E;
+}
+.FontClass1
+{
+font-family: tahoma;
+font-size: 11px;
+font-weight: bold;
+color: #708322;
+}
+.FontClass2
+{
+font-family: tahoma;
+font-size: 11px;
+font-weight: bold;
+color: #585757;
+}
+.FontClass3
+{
+font-family: tahoma;
+font-size: 11px;
+font-weight: normal;
+color: #555655
+} 
+.FontClass4
+{
+font-family: tahoma;
+font-size: 11px;
+font-weight: normal;
+color: #4C4C4C;
+}
+.FontClass5
+{
+font-family: tahoma;
+font-size: 11px;
+font-weight: bold;
+color: #6B6B6B
+}
+.FontClass6
+{
+font-family: tahoma;
+font-size: 11px;
+font-weight: normal;
+color: #6A6A6A;
+}
+.FontClass7
+{
+font-family: arial;
+font-size: 10px;
+font-weight: bold;
+color: #FFFFFF;
+}
+a.ReadMoreClass
+{
+text-decoration: none;
+font-family: tahoma;
+font-size: 11px;
+font-weight: bold;
+color: #708322
+}
+a.ReadMoreClass:hover
+{
+text-decoration: underline;
+font-family: tahoma;
+font-size: 11px;
+font-weight: bold;
+color: #708322
+}
+a.ReadMoreClass:visited
+{
+font-family: tahoma;
+font-size: 11px;
+font-weight: bold;
+color: #708322
+}
+a.metamorph
+{
+color: #FFFFFF;
+text-decoration: none;
+font-family: arial;
+font-size: 10px;
+font-weight: bold;
+}
+a.metamorph:visited
+{
+color: #FFFFFF;
+font-family: arial;
+font-size: 10px;
+font-weight: bold;
+}
+a.metamorph:hover
+{
+color: #FFFFFF;
+text-decoration: underline;
+font-family: arial;
+font-size: 10px;
+font-weight: bold;
+}
+
