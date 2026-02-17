@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techxel Computer Services - Softwares</title>
+    <meta name="keywords"
+        content="computer repair Silver Spring, laptop repair, virus cleanup, Networking Services, Wireless support, Onsite and Offsite assistance, web design, 20910">
+    <meta name="description" content="Download commonly used software and manage license keys">
+    <meta name="author" content="Techxel">
+    <meta name="copyright" content="Computer Services © 2008">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="modern.css">
+    <style>
+        .software-card {
+            background: var(--white);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .software-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .software-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .software-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .icon-office {
+            background: linear-gradient(135deg, #d64a28, #eb6b34);
+            color: white;
+        }
+
+        .icon-eset {
+            background: linear-gradient(135deg, #00a2e8, #0074b3);
+            color: white;
+        }
+
+        .software-header h2 {
+            margin: 0;
+            font-size: 1.4rem;
+            color: var(--primary-color);
+        }
+
+        .software-header p {
+            margin: 0.25rem 0 0;
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--accent-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: background 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .download-btn:hover {
+            background: var(--accent-hover);
+            color: white;
+            text-decoration: none;
+        }
+
+        .license-section {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .license-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .license-display {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .license-key {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: #f3f4f6;
+            padding: 0.6rem 1rem;
+            border-radius: 0.375rem;
+            border: 1px solid var(--border-color);
+            letter-spacing: 0.05em;
+            color: var(--primary-color);
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .license-key.editing {
+            background: white;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            outline: none;
+        }
+
+        .license-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            background: white;
+            color: var(--text-color);
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #f3f4f6;
+        }
+
+        .action-btn.save {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+
+        .action-btn.save:hover {
+            background: #059669;
+        }
+
+        .action-btn.copy {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        .action-btn.copy:hover {
+            background: var(--accent-hover);
+        }
+
+        .action-btn.cancel {
+            color: #ef4444;
+            border-color: #ef4444;
+        }
+
+        .action-btn.cancel:hover {
+            background: #fef2f2;
+        }
+
+        /* Password modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-box h3 {
+            margin: 0 0 1rem;
+            color: var(--primary-color);
+        }
+
+        .modal-box input[type="password"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            z-index: 200;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast.success {
+            background: #10b981;
+            color: white;
+        }
+
+        .toast.error {
+            background: #ef4444;
+            color: white;
+        }
+
+        .toast.info {
+            background: var(--accent-color);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container nav-container">
+            <a href="index.html" class="logo">Tech<span>xel</span></a>
+            <button class="menu-toggle" aria-label="Toggle Menu">☰</button>
+            <nav>
+                <ul id="nav-list">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="list.html">Website Gallery</a></li>
+                    <li><a href="index-2.html">Services</a></li>
+                    <li><a href="index.html">Tech-notes</a></li>
+                    <li><a href="index-3.html">Prices</a></li>
+                    <li><a href="index-4.html">Support</a></li>
+                    <li><a href="evaluation.html">Surveys</a></li>
+                    <li><a href="location.html">Place Location</a></li>
+                    <li><a href="reviews.html">Reviews</a></li>
+                    <li><a href="payment.html">Online Payment</a></li>
+                    <li><a href="softwares.html" class="active">Softwares</a></li>
+                    <li><a href="index-5.html">Contacts</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h1>Softwares & Licenses</h1>
+            <p>Quick access to commonly used software installers and their license keys.</p>
+        </section>
+
+        <!-- Microsoft Office 2024 -->
+        <div class="software-card" data-software-id="ms_office_2024">
+            <div class="software-header">
+                <div class="software-icon icon-office">📦</div>
+                <div>
+                    <h2>Microsoft Office 2024</h2>
+                    <p>Professional Plus — Full Installer</p>
+                </div>
+            </div>
+            <a href="softwares/MS_Office_ProPlus2024_Installer.exe" class="download-btn" download>
+                ⬇ Download Installer
+            </a>
+            <div class="license-section">
+                <div class="license-label">License Key</div>
+                <div class="license-display">
+                    <input type="text" class="license-key" id="license-ms_office_2024" value="Loading..." readonly>
+                    <div class="license-actions">
+                        <button class="action-btn copy" onclick="copyLicense('ms_office_2024')">📋 Copy</button>
+                        <button class="action-btn" onclick="startEdit('ms_office_2024')">✏️ Edit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ESET NOD32 Antivirus -->
+        <div class="software-card" data-software-id="eset_antivirus">
+            <div class="software-header">
+                <div class="software-icon icon-eset">🛡️</div>
+                <div>
+                    <h2>ESET NOD32 Antivirus</h2>
+                    <p>Live Installer — Always Latest Version</p>
+                </div>
+            </div>
+            <a href="https://download.eset.com/com/eset/tools/installers/live_eav/latest/eset_nod32_antivirus_live_installer.exe"
+                class="download-btn" download>
+                ⬇ Download Installer
+            </a>
+            <div class="license-section">
+                <div class="license-label">License Key</div>
+                <div class="license-display">
+                    <input type="text" class="license-key" id="license-eset_antivirus" value="Loading..." readonly>
+                    <div class="license-actions">
+                        <button class="action-btn copy" onclick="copyLicense('eset_antivirus')">📋 Copy</button>
+                        <button class="action-btn" onclick="startEdit('eset_antivirus')">✏️ Edit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Password Modal -->
+    <div class="modal-overlay" id="passwordModal">
+        <div class="modal-box">
+            <h3>🔒 Admin Authentication</h3>
+            <p style="color: #6b7280; font-size: 0.9rem; margin-bottom: 1rem;">Enter the admin password to save changes.
+            </p>
+            <input type="password" id="adminPassword" placeholder="Enter password..."
+                onkeydown="if(event.key==='Enter') confirmSave()">
+            <div class="modal-actions">
+                <button class="action-btn cancel" onclick="cancelSave()">Cancel</button>
+                <button class="action-btn save" onclick="confirmSave()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast"></div>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-links">
+                <a href="index.html">Computer Services</a> © 2009 All Rights Reserved.
+                <a href="mailto:support@techxel.com">Email Us</a>
+            </div>
+            <div class="footer-contact">
+                Call Us: 301.996.4161
+            </div>
+            <div class="footer-links">
+                <a href="index-6.html">Privacy Policy</a> | <a href="#">Terms Of Use</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // State
+        let currentEditId = null;
+        let originalValue = '';
+
+        // Load licenses from server
+        async function loadLicenses() {
+            try {
+                const resp = await fetch('licenses-api.php');
+                const data = await resp.json();
+                if (data.success && data.licenses) {
+                    for (const [id, info] of Object.entries(data.licenses)) {
+                        const input = document.getElementById('license-' + id);
+                        if (input) {
+                            input.value = info.license;
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to load licenses:', err);
+                // Show fallback
+                document.querySelectorAll('.license-key').forEach(el => {
+                    if (el.value === 'Loading...') el.value = 'Unable to load';
+                });
+            }
+        }
+
+        // Copy license to clipboard
+        function copyLicense(softwareId) {
+            const input = document.getElementById('license-' + softwareId);
+            navigator.clipboard.writeText(input.value).then(() => {
+                showToast('License key copied to clipboard!', 'info');
+            }).catch(() => {
+                // Fallback
+                input.select();
+                document.execCommand('copy');
+                showToast('License key copied!', 'info');
+            });
+        }
+
+        // Start editing
+        function startEdit(softwareId) {
+            // Cancel any other ongoing edit
+            if (currentEditId && currentEditId !== softwareId) {
+                cancelEdit(currentEditId);
+            }
+
+            currentEditId = softwareId;
+            const input = document.getElementById('license-' + softwareId);
+            originalValue = input.value;
+            input.readOnly = false;
+            input.classList.add('editing');
+            input.focus();
+            input.select();
+
+            // Update buttons
+            const card = input.closest('.software-card');
+            const actionsDiv = card.querySelector('.license-actions');
+            actionsDiv.innerHTML = `
+                <button class="action-btn save" onclick="promptSave('${softwareId}')">💾 Save</button>
+                <button class="action-btn cancel" onclick="cancelEdit('${softwareId}')">✕ Cancel</button>
+            `;
+        }
+
+        // Cancel editing
+        function cancelEdit(softwareId) {
+            const input = document.getElementById('license-' + softwareId);
+            input.value = originalValue;
+            input.readOnly = true;
+            input.classList.remove('editing');
+
+            // Restore buttons
+            const card = input.closest('.software-card');
+            const actionsDiv = card.querySelector('.license-actions');
+            actionsDiv.innerHTML = `
+                <button class="action-btn copy" onclick="copyLicense('${softwareId}')">📋 Copy</button>
+                <button class="action-btn" onclick="startEdit('${softwareId}')">✏️ Edit</button>
+            `;
+
+            currentEditId = null;
+        }
+
+        // Prompt for password before saving
+        function promptSave(softwareId) {
+            currentEditId = softwareId;
+            document.getElementById('passwordModal').classList.add('active');
+            document.getElementById('adminPassword').value = '';
+            document.getElementById('adminPassword').focus();
+        }
+
+        // Confirm save with password
+        async function confirmSave() {
+            const password = document.getElementById('adminPassword').value;
+            if (!password) {
+                showToast('Please enter a password', 'error');
+                return;
+            }
+
+            const input = document.getElementById('license-' + currentEditId);
+            const newLicense = input.value.trim();
+
+            try {
+                const resp = await fetch('licenses-api.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        software_id: currentEditId,
+                        license: newLicense,
+                        password: password
+                    })
+                });
+                const data = await resp.json();
+
+                if (data.success) {
+                    showToast('License updated successfully!', 'success');
+                    document.getElementById('passwordModal').classList.remove('active');
+
+                    // Restore to view mode
+                    input.readOnly = true;
+                    input.classList.remove('editing');
+                    const card = input.closest('.software-card');
+                    const actionsDiv = card.querySelector('.license-actions');
+                    actionsDiv.innerHTML = `
+                        <button class="action-btn copy" onclick="copyLicense('${currentEditId}')">📋 Copy</button>
+                        <button class="action-btn" onclick="startEdit('${currentEditId}')">✏️ Edit</button>
+                    `;
+                    currentEditId = null;
+                } else {
+                    showToast(data.error || 'Failed to save', 'error');
+                }
+            } catch (err) {
+                showToast('Network error — could not save', 'error');
+                console.error(err);
+            }
+        }
+
+        // Cancel save modal
+        function cancelSave() {
+            document.getElementById('passwordModal').classList.remove('active');
+        }
+
+        // Toast notification
+        function showToast(message, type) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast ' + type + ' show';
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+
+        // Mobile menu
+        document.querySelector('.menu-toggle').addEventListener('click', function () {
+            document.querySelector('#nav-list').classList.toggle('show');
+        });
+
+        // Init
+        loadLicenses();
+    </script>
+</body>
+
+</html>
