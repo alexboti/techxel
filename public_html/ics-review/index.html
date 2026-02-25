@@ -737,38 +737,105 @@
       ["Zainab Foday", "zfoday@icsprograms.com"],
     ];
 
-    // State: { email: 'keep'|'delete'|'verify'|null }
-    const STORAGE_KEY = 'ics_access_review_v1';
-    let state = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    // ── Shared server state (loaded from review-api.php) ──────────────────
+    const API = 'review-api.php';
+    let state = {};           // { email: 'keep'|'delete'|'verify' }
     let currentFilter = 'all';
+    let syncInterval = null;
 
-    function saveState() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    // ── Sync indicator in header ──────────────────────────────────────────
+    const syncDot = document.createElement('span');
+    syncDot.id = 'syncDot';
+    syncDot.title = 'Synced with server';
+    syncDot.style.cssText =
+      'width:8px;height:8px;border-radius:50%;background:#2ea043;display:inline-block;margin-left:6px;transition:background .3s;flex-shrink:0;';
+    document.querySelector('.header-text').appendChild(syncDot);
+
+    function setSyncState(s) {
+      // s: 'synced' | 'saving' | 'error'
+      const colors = { synced: '#2ea043', saving: '#d29922', error: '#f85149' };
+      syncDot.style.background = colors[s] || colors.synced;
+      syncDot.title = s === 'synced' ? 'Live – synced with server'
+        : s === 'saving' ? 'Saving…'
+          : 'Sync error – check connection';
     }
 
-    function setStatus(email, status) {
-      // Toggle off if already selected
-      if (state[email] === status) {
-        delete state[email];
-      } else {
-        state[email] = status;
+    // ── Load state from server ────────────────────────────────────────────
+    async function loadFromServer(silent = false) {
+      try {
+        const res = await fetch(API + '?_=' + Date.now());
+        const data = await res.json();
+        if (data.success) {
+          state = data.state || {};
+          USERS.forEach(([, email]) => renderRow(email));
+          updateStats();
+          setSyncState('synced');
+        }
+      } catch (err) {
+        setSyncState('error');
+        if (!silent) showToast('⚠ Could not connect to server.', true);
       }
-      saveState();
+    }
+
+    // ── Save a single status change to server ─────────────────────────────
+    async function saveToServer(email, status) {
+      setSyncState('saving');
+      try {
+        const res = await fetch(API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ updates: { [email]: status } })
+        });
+        const data = await res.json();
+        if (data.success) {
+          state = data.state || {};
+          setSyncState('synced');
+        } else {
+          setSyncState('error');
+          showToast('⚠ Save failed.', true);
+        }
+      } catch (err) {
+        setSyncState('error');
+        showToast('⚠ Network error – change not saved.', true);
+      }
+    }
+
+    // ── Reset all on server ───────────────────────────────────────────────
+    async function resetOnServer() {
+      setSyncState('saving');
+      try {
+        await fetch(API, { method: 'DELETE' });
+        state = {};
+        USERS.forEach(([, email]) => renderRow(email));
+        updateStats();
+        setSyncState('synced');
+        showToast('All statuses cleared.');
+      } catch (err) {
+        setSyncState('error');
+        showToast('⚠ Reset failed.', true);
+      }
+    }
+
+    // ── Status toggle ─────────────────────────────────────────────────────
+    async function setStatus(email, status) {
+      // Toggle off if already selected
+      const newStatus = state[email] === status ? null : status;
+      // Optimistic update
+      if (newStatus === null) delete state[email]; else state[email] = newStatus;
+      renderRow(email);
+      updateStats();
+      // Persist
+      await saveToServer(email, newStatus);
+      // Re-render with server truth
       renderRow(email);
       updateStats();
     }
 
     function renderRow(email) {
-      // Use plain getElementById — do NOT use CSS.escape() here;
-      // CSS.escape is for CSS selectors, not for element ID lookups.
       const row = document.getElementById('row-' + email);
       if (!row) return;
       const s = state[email] || null;
-
-      // Row class
       row.className = s ? 'status-' + s : '';
-
-      // Update button states
       const btns = row.querySelectorAll('.act-btn');
       btns.forEach(b => {
         b.classList.toggle('selected', b.dataset.status === s);
@@ -782,8 +849,6 @@
         const tr = document.createElement('tr');
         tr.id = 'row-' + email;
 
-        // Use data-email attribute instead of inline onclick to avoid
-        // issues with special characters (hyphens, @) in email addresses.
         const td = document.createElement('td');
         td.className = 'td-actions';
         td.innerHTML = `
@@ -802,7 +867,7 @@
         renderRow(email);
       });
 
-      // Single delegated listener — handles all button clicks efficiently
+      // Single delegated listener
       tbody.addEventListener('click', e => {
         const btn = e.target.closest('.act-btn');
         if (!btn) return;
@@ -846,14 +911,11 @@
       USERS.forEach(([name, email]) => {
         const row = document.getElementById('row-' + email);
         if (!row) return;
-        const s = state[email] || 'pending';
-
         const matchSearch = !q || name.toLowerCase().includes(q) || email.toLowerCase().includes(q);
         const matchFilter =
           currentFilter === 'all' ? true :
             currentFilter === 'pending' ? !state[email] :
               state[email] === currentFilter;
-
         const show = matchSearch && matchFilter;
         row.classList.toggle('hidden', !show);
         if (show) visible++;
@@ -862,12 +924,8 @@
     }
 
     function resetAll() {
-      if (!confirm('Reset all statuses? This cannot be undone.')) return;
-      state = {};
-      saveState();
-      USERS.forEach(([, email]) => renderRow(email));
-      updateStats();
-      showToast('All statuses cleared.');
+      if (!confirm('Reset ALL statuses for everyone? This cannot be undone.')) return;
+      resetOnServer();
     }
 
     function exportCSV() {
@@ -877,27 +935,38 @@
         return order.indexOf(state[a] || '') - order.indexOf(state[b] || '');
       });
       sorted.forEach(([name, email], i) => {
-        rows.push([i + 1, name, email, (state[email] || '').toUpperCase()]);
+        rows.push([i + 1, name, email, (state[email] || 'PENDING').toUpperCase()]);
       });
       const csv = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
       const blob = new Blob([csv], { type: 'text/csv' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url; a.download = 'ICS_Access_Review.csv';
+      a.href = url; a.download = 'ICS_Email_Review_2026.csv';
       a.click(); URL.revokeObjectURL(url);
       showToast('CSV exported!');
     }
 
     let toastTimer;
-    function showToast(msg) {
+    function showToast(msg, isError = false) {
       const t = document.getElementById('toast');
       t.textContent = msg;
+      t.style.borderColor = isError ? 'var(--del-pill)' : 'var(--border)';
       t.classList.add('show');
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
     }
 
+    // ── Init ──────────────────────────────────────────────────────────────
     buildTable();
+    loadFromServer();                             // initial load
+
+    // Poll server every 15 s so open tabs stay in sync
+    syncInterval = setInterval(() => loadFromServer(true), 15000);
+
+    // Reload when tab becomes visible again (user switches back)
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) loadFromServer(true);
+    });
   </script>
 </body>
 
