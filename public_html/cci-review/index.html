@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CapitalCare – Email Accounts Review 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0d1117;
+            --surface: #161b22;
+            --surface2: #21262d;
+            --border: #30363d;
+            --text: #e6edf3;
+            --muted: #7d8590;
+            --keep: #238636;
+            --keep-bg: #0d4a1f;
+            --keep-pill: #2ea043;
+            --del: #da3633;
+            --del-bg: #5c1010;
+            --del-pill: #f85149;
+            --ver: #d29922;
+            --ver-bg: #5a3e00;
+            --ver-pill: #e3b341;
+            --accent: #1f6feb;
+            --accent2: #388bfd;
+            --radius: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ── Header ── */
+        header {
+            background: linear-gradient(135deg, #0d1b38 0%, #0d1117 60%);
+            border-bottom: 1px solid var(--border);
+            padding: 24px 32px 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+        }
+
+        .logo {
+            height: 46px;
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+            background: #1f6feb;
+            border-radius: 10px;
+            padding: 8px 14px;
+            font-weight: 800;
+            font-size: 1rem;
+            letter-spacing: .04em;
+            color: #fff;
+        }
+
+        .header-text h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .header-text p {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .header-right {
+            margin-left: auto;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 7px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all .18s ease;
+            font-family: inherit;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border-color: var(--border);
+            color: var(--text);
+        }
+
+        .btn-outline:hover {
+            background: var(--surface2);
+            border-color: var(--accent2);
+            color: var(--accent2);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent2);
+        }
+
+        /* ── Stats Bar ── */
+        .stats-bar {
+            display: flex;
+            gap: 12px;
+            padding: 20px 32px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            min-width: 130px;
+            transition: border-color .2s;
+        }
+
+        .stat-card:hover {
+            border-color: var(--accent2);
+        }
+
+        .stat-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .stat-label {
+            font-size: 0.72rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        /* Progress bar */
+        .progress-wrap {
+            padding: 0 32px 16px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .progress-label {
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .progress-track {
+            height: 6px;
+            background: var(--bg);
+            border-radius: 99px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--keep-pill), var(--accent2));
+            border-radius: 99px;
+            transition: width .4s ease;
+            width: 0%;
+        }
+
+        /* ── Toolbar ── */
+        .toolbar {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            padding: 16px 32px;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-wrap svg {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            pointer-events: none;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 9px 12px 9px 38px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.85rem;
+            outline: none;
+            transition: border-color .18s;
+        }
+
+        #searchInput:focus {
+            border-color: var(--accent2);
+        }
+
+        #searchInput::placeholder {
+            color: var(--muted);
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            padding: 7px 14px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--muted);
+            transition: all .18s;
+            font-family: inherit;
+        }
+
+        .filter-tab:hover {
+            color: var(--text);
+            border-color: var(--text);
+        }
+
+        .filter-tab.active {
+            background: var(--surface2);
+            border-color: var(--accent2);
+            color: var(--accent2);
+        }
+
+        /* ── Table ── */
+        .table-wrap {
+            padding: 0 32px 40px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        thead th {
+            padding: 12px 14px;
+            text-align: left;
+            font-size: 0.7rem;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+        }
+
+        thead th:last-child {
+            text-align: center;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background .12s;
+        }
+
+        tbody tr:hover {
+            background: var(--surface);
+        }
+
+        tbody tr.status-keep {
+            border-left: 3px solid var(--keep-pill);
+        }
+
+        tbody tr.status-delete {
+            border-left: 3px solid var(--del-pill);
+        }
+
+        tbody tr.status-verify {
+            border-left: 3px solid var(--ver-pill);
+        }
+
+        tbody tr.hidden {
+            display: none;
+        }
+
+        td {
+            padding: 10px 14px;
+            font-size: 0.86rem;
+        }
+
+        .td-num {
+            color: var(--muted);
+            font-size: 0.78rem;
+            width: 40px;
+        }
+
+        .td-name {
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .td-email {
+            color: var(--muted);
+            font-size: 0.82rem;
+        }
+
+        .td-actions {
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        /* ── Action Buttons ── */
+        .action-btns {
+            display: inline-flex;
+            gap: 6px;
+        }
+
+        .act-btn {
+            padding: 5px 14px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            font-family: inherit;
+            transition: all .15s ease;
+            letter-spacing: .02em;
+        }
+
+        .act-keep {
+            background: transparent;
+            border-color: #2d6a3f;
+            color: #57ab6e;
+        }
+
+        .act-del {
+            background: transparent;
+            border-color: #6e2b2b;
+            color: #f47068;
+        }
+
+        .act-ver {
+            background: transparent;
+            border-color: #6e5100;
+            color: #d4a72c;
+        }
+
+        .act-keep:hover {
+            background: var(--keep-bg);
+            border-color: var(--keep-pill);
+            color: #fff;
+        }
+
+        .act-del:hover {
+            background: var(--del-bg);
+            border-color: var(--del-pill);
+            color: #fff;
+        }
+
+        .act-ver:hover {
+            background: var(--ver-bg);
+            border-color: var(--ver-pill);
+            color: #fff;
+        }
+
+        .act-keep.selected {
+            background: var(--keep-bg);
+            border-color: var(--keep-pill);
+            color: #3fb950;
+            box-shadow: 0 0 0 2px #2ea04340;
+        }
+
+        .act-del.selected {
+            background: var(--del-bg);
+            border-color: var(--del-pill);
+            color: #f85149;
+            box-shadow: 0 0 0 2px #f8514940;
+        }
+
+        .act-ver.selected {
+            background: var(--ver-bg);
+            border-color: var(--ver-pill);
+            color: #e3b341;
+            box-shadow: 0 0 0 2px #e3b34140;
+        }
+
+        /* ── Empty state ── */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--muted);
+            display: none;
+        }
+
+        .empty-state svg {
+            margin-bottom: 16px;
+            opacity: .4;
+        }
+
+        .empty-state p {
+            font-size: 0.9rem;
+        }
+
+        /* ── Toast ── */
+        #toast {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            z-index: 999;
+            box-shadow: 0 8px 30px #00000088;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all .25s ease;
+            pointer-events: none;
+        }
+
+        #toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        @media (max-width: 640px) {
+
+            header,
+            .stats-bar,
+            .toolbar,
+            .table-wrap,
+            .progress-wrap {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+
+            .td-email {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">CCI</div>
+        <div class="header-text">
+            <h1>CapitalCare – Email Accounts Review 2026</h1>
+            <p>Review which accounts should be kept or removed</p>
+        </div>
+        <div class="header-right">
+            <button class="btn btn-outline" onclick="resetAll()">↺ Reset</button>
+            <button class="btn btn-primary" onclick="exportCSV()">⬇ Export CSV</button>
+        </div>
+    </header>
+
+    <!-- Stats -->
+    <div class="stats-bar" id="statsBar">
+        <div class="stat-card">
+            <div class="stat-dot" style="background:#7d8590"></div>
+            <div>
+                <div class="stat-label">Total</div>
+                <div class="stat-value" id="statTotal">84</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-dot" style="background:#7d8590"></div>
+            <div>
+                <div class="stat-label">Pending</div>
+                <div class="stat-value" id="statPending">84</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-dot" style="background:var(--keep-pill)"></div>
+            <div>
+                <div class="stat-label">Keep</div>
+                <div class="stat-value" style="color:var(--keep-pill)" id="statKeep">0</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-dot" style="background:var(--del-pill)"></div>
+            <div>
+                <div class="stat-label">Delete</div>
+                <div class="stat-value" style="color:var(--del-pill)" id="statDelete">0</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-dot" style="background:var(--ver-pill)"></div>
+            <div>
+                <div class="stat-label">Verify</div>
+                <div class="stat-value" style="color:var(--ver-pill)" id="statVerify">0</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress-wrap">
+        <div class="progress-label">
+            <span>Review progress</span>
+            <span id="progressText">0 / 84 reviewed</span>
+        </div>
+        <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+        <div class="search-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input type="text" id="searchInput" placeholder="Search by name or email…" oninput="applyFilters()">
+        </div>
+        <div class="filter-tabs">
+            <button class="filter-tab active" data-filter="all" onclick="setFilter('all',this)">All</button>
+            <button class="filter-tab" data-filter="pending" onclick="setFilter('pending',this)">Pending</button>
+            <button class="filter-tab" data-filter="keep" onclick="setFilter('keep',this)">Keep</button>
+            <button class="filter-tab" data-filter="delete" onclick="setFilter('delete',this)">Delete</button>
+            <button class="filter-tab" data-filter="verify" onclick="setFilter('verify',this)">Verify</button>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+        <table id="userTable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Full Name</th>
+                    <th>Email Address</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+        <div class="empty-state" id="emptyState">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <p>No users match your search or filter.</p>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        const USERS = [
+            ["Francis Titanji", "ftitanji@capitalcareinc.com"],
+            ["Jules Ngandjou", "jngandjou@capitalcareinc.com"],
+            ["Afanwi Lum", "alum@capitalcareinc.com"],
+            ["Agnes Achu", "aachu@capitalcareinc.com"],
+            ["Alex Forde", "aforde@capitalcareinc.com"],
+            ["Alex Boti", "aboti@capitalcareinc.com"],
+            ["Alexander Oni", "aoni@capitalcareinc.com"],
+            ["Aloys Galabe", "agalabe@capitalcareinc.com"],
+            ["Amina Anyam", "aanyam@capitalcareinc.com"],
+            ["Anna Asong", "aasong@capitalcareinc.com"],
+            ["Anne Marie Niba", "aniba@capitalcareinc.com"],
+            ["Archive Oganiyu", "archive.oganiyu@capitalcareinc.com"],
+            ["Atem Egemene", "aegemene@capitalcareinc.com"],
+            ["Betrand Ndanga", "bndanga@capitalcareinc.com"],
+            ["Blanche Komtangi", "bkomtangi@capitalcareinc.com"],
+            ["Bonnilia Johnson", "bjohnson@capitalcareinc.com"],
+            ["Capitalcare Scanner", "scanner@capitalcareinc.com"],
+            ["CapitalCare HHAdocs", "hhadocs@capitalcareinc.com"],
+            ["CapitalCare Frontdesk", "frontdesk@capitalcareinc.com"],
+            ["Collins Asaba", "casaba@capitalcareinc.com"],
+            ["Collins Achu", "cachu@capitalcareinc.com"],
+            ["Cyril Nzegge", "cnzegge@capitalcareinc.com"],
+            ["Delphine Sirri", "dsirri@capitalcareinc.com"],
+            ["Dorothy Onyenemezu", "donyenemezu@capitalcareinc.com"],
+            ["Edwan Mbaku", "embaku@capitalcareinc.com"],
+            ["Elvis Jatto", "ejatto@capitalcareinc.com"],
+            ["Emad Elsayed", "eelsayed@capitalcareinc.com"],
+            ["Engonwie Ndam", "endam@capitalcareinc.com"],
+            ["Enunice Nduzem", "enduzem@capitalcareinc.com"],
+            ["Felicia Olawoyin", "folawoyin@capitalcareinc.com"],
+            ["Flavin Akande", "fakande@capitalcareinc.com"],
+            ["Freddy Ntadun", "fntadun@capitalcareinc.com"],
+            ["Guylene Djahoung", "gdjahoung@capitalcareinc.com"],
+            ["Guylinda Cherichel", "gcherichel@capitalcareinc.com"],
+            ["Gwendolyn Anokam", "ganokam@capitalcareinc.com"],
+            ["Hamada Megahed", "hmegahed@capitalcareinc.com"],
+            ["HHA Admin Assistant", "frontdeskhha@capitalcareinc.com"],
+            ["Ifeoma Ariwaodo", "iariwaodo@capitalcareinc.com"],
+            ["Ifeoma Ogide", "iogide@capitalcareinc.com"],
+            ["Ignatius Foncham", "ifoncham@capitalcareinc.com"],
+            ["Info Capitalcare", "info@capitalcareinc.com"],
+            ["Innocentia Ateh", "iateh@capitalcareinc.com"],
+            ["Jobs Capitalcare", "jobs@capitalcareinc.com"],
+            ["Johnstone Ashutangtang", "jashutangtang@capitalcareinc.com"],
+            ["Judith-Belle Enow", "jenow@capitalcareinc.com"],
+            ["Justin Ketonze", "jketonze@capitalcareinc.com"],
+            ["Katie Ngoh", "kngoh@capitalcareinc.com"],
+            ["Kellen Namaganda (Archive)", "archives.knamaganda@capitalcareinc.com"],
+            ["Kellen Namaganda", "knamaganda@capitalcareinc.com"],
+            ["Kikicia Freeman", "kfreeman@capitalcareinc.com"],
+            ["Kluivert Tebo", "ktebo@capitalcareinc.com"],
+            ["Limunga Renna", "lrenna@capitalcareinc.com"],
+            ["Linus Asaba", "lasaba@capitalcareinc.com"],
+            ["Louis Nforna", "lnforna@capitalcareinc.com"],
+            ["Mafor Kenfack", "mkenfack@capitalcareinc.com"],
+            ["Maria Lopez", "mlopez@capitalcareinc.com"],
+            ["Martha Nduma", "mnduma@capitalcareinc.com"],
+            ["Martinet Ncube", "mncube@capitalcareinc.com"],
+            ["Maryann Johnson", "mjohnson@capitalcareinc.com"],
+            ["Mellissa Teasley", "mteasley@capitalcareinc.com"],
+            ["Michael Ofori-adu", "mofori@capitalcareinc.com"],
+            ["Mohamed Mansaray", "mmansaray@capitalcareinc.com"],
+            ["Nadeige Chi", "nchi@capitalcareinc.com"],
+            ["Ngozi Uwahemo", "nuwahemo@capitalcareinc.com"],
+            ["Ngumbah Chumbow", "nchumbow@capitalcareinc.com"],
+            ["Njicheh Tazano", "ntazano@capitalcareinc.com"],
+            ["Olivia Awah", "bawah@capitalcareinc.com"],
+            ["Osman Daouda", "odauda@capitalcareinc.com"],
+            ["Patience Tubuo", "ptubuo@capitalcareinc.com"],
+            ["Paul Atang", "patang@capitalcareinc.com"],
+            ["Praxite Fongang", "pfongang@capitalcareinc.com"],
+            ["Prince Amara", "pamara@capitalcareinc.com"],
+            ["Raissa Nojang", "rnojang@capitalcareinc.com"],
+            ["Roseline Nnacho", "rnnacho@capitalcareinc.com"],
+            ["Rosemary Jordan", "rjordan@capitalcareinc.com"],
+            ["Services CCI", "services@capitalcareinc.com"],
+            ["Sophia Lopez", "slopez@capitalcareinc.com"],
+            ["Stephanie Neba", "sneba@capitalcareinc.com"],
+            ["Theresa Hewitt", "thewitt@capitalcareinc.com"],
+            ["Trexler House (CapitalCare Inc.)", "trexler@capitalcareinc.com"],
+            ["Vevanje Njonjo", "vnjonjo@capitalcareinc.com"],
+            ["Wananta Atcham", "watcham@capitalcareinc.com"],
+            ["Winston Karumba", "wkarumba@capitalcareinc.com"],
+            ["Yvonne Atang", "yatang@capitalcareinc.com"],
+        ];
+
+        // ── Shared server state (loaded from review-api.php) ──────────────────
+        const API = 'review-api.php';
+        let state = {};
+        let currentFilter = 'all';
+        let syncInterval = null;
+
+        // ── Sync indicator ────────────────────────────────────────────────────
+        const syncDot = document.createElement('span');
+        syncDot.id = 'syncDot';
+        syncDot.title = 'Synced with server';
+        syncDot.style.cssText =
+            'width:8px;height:8px;border-radius:50%;background:#2ea043;display:inline-block;margin-left:6px;transition:background .3s;flex-shrink:0;';
+        document.querySelector('.header-text').appendChild(syncDot);
+
+        function setSyncState(s) {
+            const colors = { synced: '#2ea043', saving: '#d29922', error: '#f85149' };
+            syncDot.style.background = colors[s] || colors.synced;
+            syncDot.title = s === 'synced' ? 'Live – synced with server'
+                : s === 'saving' ? 'Saving…'
+                    : 'Sync error – check connection';
+        }
+
+        async function loadFromServer(silent = false) {
+            try {
+                const res = await fetch(API + '?_=' + Date.now());
+                const data = await res.json();
+                if (data.success) {
+                    state = data.state || {};
+                    USERS.forEach(([, email]) => renderRow(email));
+                    updateStats();
+                    setSyncState('synced');
+                }
+            } catch (err) {
+                setSyncState('error');
+                if (!silent) showToast('⚠ Could not connect to server.', true);
+            }
+        }
+
+        async function saveToServer(email, status) {
+            setSyncState('saving');
+            try {
+                const res = await fetch(API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ updates: { [email]: status } })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    state = data.state || {};
+                    setSyncState('synced');
+                } else {
+                    setSyncState('error');
+                    showToast('⚠ Save failed.', true);
+                }
+            } catch (err) {
+                setSyncState('error');
+                showToast('⚠ Network error – change not saved.', true);
+            }
+        }
+
+        async function resetOnServer() {
+            setSyncState('saving');
+            try {
+                await fetch(API, { method: 'DELETE' });
+                state = {};
+                USERS.forEach(([, email]) => renderRow(email));
+                updateStats();
+                setSyncState('synced');
+                showToast('All statuses cleared.');
+            } catch (err) {
+                setSyncState('error');
+                showToast('⚠ Reset failed.', true);
+            }
+        }
+
+        async function setStatus(email, status) {
+            const newStatus = state[email] === status ? null : status;
+            if (newStatus === null) delete state[email]; else state[email] = newStatus;
+            renderRow(email);
+            updateStats();
+            await saveToServer(email, newStatus);
+            renderRow(email);
+            updateStats();
+        }
+
+        function renderRow(email) {
+            const row = document.getElementById('row-' + email);
+            if (!row) return;
+            const s = state[email] || null;
+            row.className = s ? 'status-' + s : '';
+            row.querySelectorAll('.act-btn').forEach(b => {
+                b.classList.toggle('selected', b.dataset.status === s);
+            });
+        }
+
+        function buildTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            USERS.forEach(([name, email], i) => {
+                const tr = document.createElement('tr');
+                tr.id = 'row-' + email;
+
+                const td = document.createElement('td');
+                td.className = 'td-actions';
+                td.innerHTML = `
+          <div class="action-btns">
+            <button class="act-btn act-keep" data-email="${email}" data-status="keep">✓ Keep</button>
+            <button class="act-btn act-del"  data-email="${email}" data-status="delete">✕ Delete</button>
+            <button class="act-btn act-ver"  data-email="${email}" data-status="verify">? Verify</button>
+          </div>`;
+
+                tr.innerHTML = `
+          <td class="td-num">${i + 1}</td>
+          <td class="td-name">${name}</td>
+          <td class="td-email">${email}</td>`;
+                tr.appendChild(td);
+                tbody.appendChild(tr);
+                renderRow(email);
+            });
+
+            tbody.addEventListener('click', e => {
+                const btn = e.target.closest('.act-btn');
+                if (!btn) return;
+                setStatus(btn.dataset.email, btn.dataset.status);
+            });
+
+            updateStats();
+        }
+
+        function updateStats() {
+            const total = USERS.length;
+            const keep = USERS.filter(([, e]) => state[e] === 'keep').length;
+            const del = USERS.filter(([, e]) => state[e] === 'delete').length;
+            const ver = USERS.filter(([, e]) => state[e] === 'verify').length;
+            const reviewed = keep + del + ver;
+            const pending = total - reviewed;
+
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statPending').textContent = pending;
+            document.getElementById('statKeep').textContent = keep;
+            document.getElementById('statDelete').textContent = del;
+            document.getElementById('statVerify').textContent = ver;
+
+            const pct = Math.round((reviewed / total) * 100);
+            document.getElementById('progressFill').style.width = pct + '%';
+            document.getElementById('progressText').textContent = `${reviewed} / ${total} reviewed`;
+
+            applyFilters();
+        }
+
+        function setFilter(f, btn) {
+            currentFilter = f;
+            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            let visible = 0;
+            USERS.forEach(([name, email]) => {
+                const row = document.getElementById('row-' + email);
+                if (!row) return;
+                const matchSearch = !q || name.toLowerCase().includes(q) || email.toLowerCase().includes(q);
+                const matchFilter =
+                    currentFilter === 'all' ? true :
+                        currentFilter === 'pending' ? !state[email] :
+                            state[email] === currentFilter;
+                const show = matchSearch && matchFilter;
+                row.classList.toggle('hidden', !show);
+                if (show) visible++;
+            });
+            document.getElementById('emptyState').style.display = visible === 0 ? 'block' : 'none';
+        }
+
+        function resetAll() {
+            if (!confirm('Reset ALL statuses for everyone? This cannot be undone.')) return;
+            resetOnServer();
+        }
+
+        function exportCSV() {
+            const rows = [['#', 'Full Name', 'Email', 'Status']];
+            const order = ['keep', 'delete', 'verify', ''];
+            const sorted = [...USERS].sort(([, a], [, b]) =>
+                order.indexOf(state[a] || '') - order.indexOf(state[b] || ''));
+            sorted.forEach(([name, email], i) => {
+                rows.push([i + 1, name, email, (state[email] || 'PENDING').toUpperCase()]);
+            });
+            const csv = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'CCI_Email_Review_2026.csv';
+            a.click(); URL.revokeObjectURL(url);
+            showToast('CSV exported!');
+        }
+
+        let toastTimer;
+        function showToast(msg, isError = false) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.style.borderColor = isError ? 'var(--del-pill)' : 'var(--border)';
+            t.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+        }
+
+        // ── Init ──────────────────────────────────────────────────────────────
+        buildTable();
+        loadFromServer();
+        syncInterval = setInterval(() => loadFromServer(true), 15000);
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) loadFromServer(true);
+        });
+    </script>
+</body>
+
+</html>
