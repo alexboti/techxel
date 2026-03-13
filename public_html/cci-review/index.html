@@ -316,16 +316,25 @@
         }
 
         tbody tr.status-keep {
+            background: var(--keep-bg);
             border-left: 3px solid var(--keep-pill);
         }
+        tbody tr.status-keep td { color: #57ab6e; }
+        tbody tr.status-keep .td-email { color: #3fb95099; }
 
         tbody tr.status-delete {
+            background: var(--del-bg);
             border-left: 3px solid var(--del-pill);
         }
+        tbody tr.status-delete td { color: #f47068; }
+        tbody tr.status-delete .td-email { color: #f8514999; }
 
         tbody tr.status-verify {
+            background: var(--ver-bg);
             border-left: 3px solid var(--ver-pill);
         }
+        tbody tr.status-verify td { color: #d4a72c; }
+        tbody tr.status-verify .td-email { color: #e3b34199; }
 
         tbody tr.hidden {
             display: none;
