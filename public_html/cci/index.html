@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New Employee Account Setup — Capital Care Inc.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --brand:       #1a73e8;
+      --brand-dark:  #0d47a1;
+      --brand-light: #e8f0fe;
+      --success:     #1e8e3e;
+      --error:       #d93025;
+      --text:        #202124;
+      --muted:       #5f6368;
+      --border:      #dadce0;
+      --bg:          #f8f9fa;
+      --card:        #ffffff;
+      --radius:      12px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      color: var(--text);
+    }
+
+    /* ── HEADER ── */
+    .page-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .logo-ring {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      box-shadow: 0 4px 18px rgba(26,115,232,0.35);
+    }
+    .logo-ring svg { color: white; }
+    .page-header h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
+    .page-header p { font-size: 14px; color: var(--muted); margin-top: 6px; }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);
+      padding: 36px 40px;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .card-title {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .card-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    /* ── FORM ── */
+    .form-group { margin-bottom: 20px; }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      margin-bottom: 6px;
+      letter-spacing: 0.1px;
+    }
+    input {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: inherit;
+      color: var(--text);
+      background: var(--bg);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    input:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(26,115,232,0.12);
+      background: #fff;
+    }
+    input.error { border-color: var(--error); }
+
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    /* Preview badge */
+    .email-preview {
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--brand);
+      font-weight: 500;
+      min-height: 20px;
+      transition: opacity 0.2s;
+      opacity: 0;
+    }
+    .email-preview.visible { opacity: 1; }
+
+    /* ── BUTTON ── */
+    .btn {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: opacity 0.2s, transform 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn:hover:not(:disabled) { opacity: 0.92; transform: translateY(-1px); }
+    .btn:active:not(:disabled) { transform: translateY(0); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* Spinner */
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2.5px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+    .btn.loading .spinner { display: block; }
+    .btn.loading .btn-label { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── ALERT ── */
+    .alert {
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 14px;
+      margin-top: 20px;
+      display: none;
+      align-items: flex-start;
+      gap: 10px;
+      line-height: 1.5;
+    }
+    .alert.show { display: flex; }
+    .alert-success {
+      background: #e6f4ea;
+      border: 1px solid #a8d5b5;
+      color: var(--success);
+    }
+    .alert-error {
+      background: #fce8e6;
+      border: 1px solid #f5c6c2;
+      color: var(--error);
+    }
+    .alert-icon { font-size: 18px; flex-shrink: 0; }
+    .alert strong { display: block; margin-bottom: 2px; }
+
+    /* ── DIVIDER ── */
+    .divider { height: 1px; background: var(--border); margin: 24px 0; }
+
+    /* ── FOOTER ── */
+    .form-footer {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 20px;
+    }
+
+    @media (max-width: 520px) {
+      .card { padding: 28px 20px; }
+      .row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-header">
+    <div class="logo-ring">
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
+      </svg>
+    </div>
+    <h1>Capital Care Inc.</h1>
+    <p>Internal IT — New Account Setup</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Create New Employee Account</div>
+    <div class="card-subtitle">
+      Fill in the employee's details below. A Google Workspace account will be created automatically and their credentials will be sent to their personal email.
+    </div>
+
+    <form id="provisionForm" novalidate>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="firstName">First Name</label>
+          <input type="text" id="firstName" name="firstName" placeholder="e.g. Jane" autocomplete="given-name" required />
+        </div>
+        <div class="form-group">
+          <label for="lastName">Last Name</label>
+          <input type="text" id="lastName" name="lastName" placeholder="e.g. Smith" autocomplete="family-name" required />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="personalEmail">Personal Email Address</label>
+        <input type="email" id="personalEmail" name="personalEmail" placeholder="e.g. jane.smith@gmail.com" autocomplete="email" required />
+      </div>
+
+      <div class="form-group" style="margin-bottom:0;">
+        <label>Work Email (auto-generated)</label>
+        <div class="email-preview" id="emailPreview">—</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <button type="submit" class="btn" id="submitBtn">
+        <span class="btn-label">Create Account &amp; Send Welcome Email</span>
+        <div class="spinner"></div>
+      </button>
+
+      <div class="alert alert-success" id="alertSuccess" role="alert">
+        <span class="alert-icon">✅</span>
+        <div>
+          <strong>Account Created Successfully!</strong>
+          <span id="successMsg"></span>
+        </div>
+      </div>
+      <div class="alert alert-error" id="alertError" role="alert">
+        <span class="alert-icon">⚠️</span>
+        <div>
+          <strong>Something went wrong</strong>
+          <span id="errorMsg"></span>
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+  <div class="form-footer">
+    🔒 Secure internal tool — Capital Care Inc. IT Department
+  </div>
+
+<script>
+  // ── CONFIG ──────────────────────────────────────────────────
+  // TODO: Replace with your deployed Apps Script Web App URL
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby5Y8RroSulTmv3BONmqAvy5riSoKVzmbU6ZLx2wJO6_Ou_j16PFoFo6XaQ5m3MKxKPPw/exec";
+  // TODO: Replace with the same secret token set in Code.gs
+  const SECRET_TOKEN    = "CapCare-2026-xK9mPqR7wZbN";
+  // ────────────────────────────────────────────────────────────
+
+  const form        = document.getElementById("provisionForm");
+  const firstInput  = document.getElementById("firstName");
+  const lastInput   = document.getElementById("lastName");
+  const emailInput  = document.getElementById("personalEmail");
+  const preview     = document.getElementById("emailPreview");
+  const submitBtn   = document.getElementById("submitBtn");
+  const alertOk     = document.getElementById("alertSuccess");
+  const alertErr    = document.getElementById("alertError");
+  const successMsg  = document.getElementById("successMsg");
+  const errorMsg    = document.getElementById("errorMsg");
+
+  // Live email preview
+  function updatePreview() {
+    const f = firstInput.value.trim().toLowerCase().replace(/[^a-z\-']/g, "");
+    const l = lastInput.value.trim().toLowerCase().replace(/[^a-z\-']/g, "");
+    if (f && l) {
+      preview.textContent = `${f}.${l}@capitalcareinc.com`;
+      preview.classList.add("visible");
+    } else {
+      preview.classList.remove("visible");
+    }
+  }
+  firstInput.addEventListener("input", updatePreview);
+  lastInput.addEventListener("input",  updatePreview);
+
+  // Form submit
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    hideAlerts();
+    clearErrors();
+
+    const firstName    = firstInput.value.trim();
+    const lastName     = lastInput.value.trim();
+    const personalEmail = emailInput.value.trim();
+
+    // Simple client-side validation
+    let valid = true;
+    if (!firstName) { markError(firstInput); valid = false; }
+    if (!lastName)  { markError(lastInput);  valid = false; }
+    if (!personalEmail || !personalEmail.includes("@")) { markError(emailInput); valid = false; }
+    if (!valid) {
+      showError("Please fill in all fields correctly.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const resp = await fetch(APPS_SCRIPT_URL, {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          token:         SECRET_TOKEN,
+          firstName,
+          lastName,
+          personalEmail,
+        }),
+      });
+
+      const data = await resp.json();
+
+      if (data.success) {
+        showSuccess(`The account ${data.workEmail} has been created and a welcome email was sent to ${personalEmail}.`);
+        form.reset();
+        preview.classList.remove("visible");
+      } else {
+        showError(data.error || "An unknown error occurred.");
+      }
+    } catch (err) {
+      showError("Network error — please check your connection and the Apps Script URL.");
+    } finally {
+      setLoading(false);
+    }
+  });
+
+  // ── UI helpers ───────────────────────────────────────────────
+  function setLoading(state) {
+    submitBtn.disabled = state;
+    submitBtn.classList.toggle("loading", state);
+  }
+  function markError(el) { el.classList.add("error"); }
+  function clearErrors() {
+    document.querySelectorAll("input.error").forEach(el => el.classList.remove("error"));
+  }
+  function hideAlerts() {
+    alertOk.classList.remove("show");
+    alertErr.classList.remove("show");
+  }
+  function showSuccess(msg) {
+    successMsg.textContent = " " + msg;
+    alertOk.classList.add("show");
+  }
+  function showError(msg) {
+    errorMsg.textContent = " " + msg;
+    alertErr.classList.add("show");
+  }
+</script>
+</body>
+</html>
