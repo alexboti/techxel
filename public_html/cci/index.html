@@ -325,15 +325,17 @@
     setLoading(true);
 
     try {
-      const resp = await fetch(APPS_SCRIPT_URL, {
-        method:  "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          token:         SECRET_TOKEN,
-          firstName,
-          lastName,
-          personalEmail,
-        }),
+      // Use GET + URL params to avoid Google Apps Script's CORS/redirect issue
+      const params = new URLSearchParams({
+        token:         SECRET_TOKEN,
+        firstName,
+        lastName,
+        personalEmail,
+      });
+
+      const resp = await fetch(`${APPS_SCRIPT_URL}?${params.toString()}`, {
+        method:   "GET",
+        redirect: "follow",
       });
 
       const data = await resp.json();
