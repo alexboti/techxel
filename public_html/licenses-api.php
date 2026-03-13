@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 // ------- CONFIGURATION -------
 // Change this password to something only you know
-$ADMIN_PASSWORD = 'techxel2024';
+$ADMIN_PASSWORD = '3019964161';
 $LICENSES_FILE  = __DIR__ . '/licenses.json';
 // -----------------------------
 
