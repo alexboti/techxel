@@ -55,6 +55,11 @@
             color: white;
         }
 
+        .icon-lazesoft {
+            background: linear-gradient(135deg, #7c3aed, #5b21b6);
+            color: white;
+        }
+
         .software-header h2 {
             margin: 0;
             font-size: 1.4rem;
@@ -339,6 +344,30 @@
                     <div class="license-actions">
                         <button class="action-btn copy" onclick="copyLicense('eset_antivirus')">📋 Copy</button>
                         <button class="action-btn" onclick="startEdit('eset_antivirus')">✏️ Edit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LAZESOFT Password Removal -->
+        <div class="software-card" data-software-id="lazesoft_pwd_removal">
+            <div class="software-header">
+                <div class="software-icon icon-lazesoft">🔑</div>
+                <div>
+                    <h2>LAZESOFT Password Removal</h2>
+                    <p>Professional Edition</p>
+                </div>
+            </div>
+            <a href="softwares/lsrmppsetup.exe" class="download-btn" download>
+                ⬇ Download Installer
+            </a>
+            <div class="license-section">
+                <div class="license-label">License Key</div>
+                <div class="license-display">
+                    <input type="text" class="license-key" id="license-lazesoft_pwd_removal" value="Loading..." readonly>
+                    <div class="license-actions">
+                        <button class="action-btn copy" onclick="copyLicense('lazesoft_pwd_removal')">📋 Copy</button>
+                        <button class="action-btn" onclick="startEdit('lazesoft_pwd_removal')">✏️ Edit</button>
                     </div>
                 </div>
             </div>

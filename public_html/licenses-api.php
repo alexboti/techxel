@@ -27,8 +27,9 @@ $LICENSES_FILE  = __DIR__ . '/licenses.json';
 // Ensure the licenses file exists
 if (!file_exists($LICENSES_FILE)) {
     $default = [
-        'ms_office_2024' => ['name' => 'Microsoft Office 2024', 'license' => 'XXXXX-XXXXX-XXXXX-XXXXX-XXXXX'],
-        'eset_antivirus' => ['name' => 'ESET NOD32 Antivirus', 'license' => 'XXXX-XXXX-XXXX-XXXX-XXXX']
+        'ms_office_2024'      => ['name' => 'Microsoft Office 2024',       'license' => 'XXXXX-XXXXX-XXXXX-XXXXX-XXXXX'],
+        'eset_antivirus'      => ['name' => 'ESET NOD32 Antivirus',        'license' => 'XXXX-XXXX-XXXX-XXXX-XXXX'],
+        'lazesoft_pwd_removal'=> ['name' => 'LAZESOFT Password Removal',   'license' => '739b-b9c4-d2d2-ddc3']
     ];
     file_put_contents($LICENSES_FILE, json_encode($default, JSON_PRETTY_PRINT));
 }
