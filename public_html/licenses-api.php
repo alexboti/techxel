@@ -24,19 +24,34 @@ $ADMIN_PASSWORD = '3019964161';
 $LICENSES_FILE  = __DIR__ . '/licenses.json';
 // -----------------------------
 
-// Ensure the licenses file exists
+// Master list of all known software entries with their default license keys.
+// When the file already exists, any MISSING entries are automatically merged in.
+$KNOWN_SOFTWARE = [
+    'ms_office_2024'       => ['name' => 'Microsoft Office 2024',     'license' => 'XXXXX-XXXXX-XXXXX-XXXXX-XXXXX'],
+    'eset_antivirus'       => ['name' => 'ESET NOD32 Antivirus',      'license' => 'XXXX-XXXX-XXXX-XXXX-XXXX'],
+    'lazesoft_pwd_removal' => ['name' => 'LAZESOFT Password Removal', 'license' => '739b-b9c4-d2d2-ddc3'],
+];
+
+// Create file with defaults if it doesn't exist yet
 if (!file_exists($LICENSES_FILE)) {
-    $default = [
-        'ms_office_2024'      => ['name' => 'Microsoft Office 2024',       'license' => 'XXXXX-XXXXX-XXXXX-XXXXX-XXXXX'],
-        'eset_antivirus'      => ['name' => 'ESET NOD32 Antivirus',        'license' => 'XXXX-XXXX-XXXX-XXXX-XXXX'],
-        'lazesoft_pwd_removal'=> ['name' => 'LAZESOFT Password Removal',   'license' => '739b-b9c4-d2d2-ddc3']
-    ];
-    file_put_contents($LICENSES_FILE, json_encode($default, JSON_PRETTY_PRINT));
+    file_put_contents($LICENSES_FILE, json_encode($KNOWN_SOFTWARE, JSON_PRETTY_PRINT));
+}
+
+// Merge any new entries that are missing from the existing file
+$data = json_decode(file_get_contents($LICENSES_FILE), true) ?: [];
+$changed = false;
+foreach ($KNOWN_SOFTWARE as $id => $info) {
+    if (!isset($data[$id])) {
+        $data[$id] = $info;
+        $changed = true;
+    }
+}
+if ($changed) {
+    file_put_contents($LICENSES_FILE, json_encode($data, JSON_PRETTY_PRINT));
 }
 
 // READ
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $data = json_decode(file_get_contents($LICENSES_FILE), true);
     echo json_encode(['success' => true, 'licenses' => $data]);
     exit;
 }
@@ -58,7 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $data = json_decode(file_get_contents($LICENSES_FILE), true);
     $softwareId = $input['software_id'];
 
     if (!isset($data[$softwareId])) {
