@@ -267,10 +267,169 @@
             background: var(--accent-color);
             color: white;
         }
+
+        /* ── Page Gate (lock screen) ── */
+        #pageGate {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0f2544 100%);
+            font-family: 'Inter', sans-serif;
+        }
+
+        #pageGate.unlocked {
+            display: none;
+        }
+
+        .gate-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(16px);
+            border-radius: 1.25rem;
+            padding: 2.5rem 2rem;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 32px 64px rgba(0,0,0,0.5);
+            text-align: center;
+            animation: gateSlideIn 0.4s cubic-bezier(.16,1,.3,1) both;
+        }
+
+        @keyframes gateSlideIn {
+            from { opacity: 0; transform: translateY(24px) scale(0.97); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .gate-logo {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.25rem;
+        }
+
+        .gate-logo span {
+            color: #3b82f6;
+        }
+
+        .gate-lock-icon {
+            font-size: 2.8rem;
+            margin: 1.2rem 0 0.5rem;
+            line-height: 1;
+        }
+
+        .gate-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 0.35rem;
+        }
+
+        .gate-subtitle {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 1.75rem;
+        }
+
+        .gate-input {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border-radius: 0.6rem;
+            border: 1.5px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.07);
+            color: #f1f5f9;
+            font-size: 1.1rem;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.15em;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            box-sizing: border-box;
+            margin-bottom: 1rem;
+        }
+
+        .gate-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.25);
+        }
+
+        .gate-input.shake {
+            animation: shake 0.4s ease;
+            border-color: #ef4444 !important;
+        }
+
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            20%      { transform: translateX(-8px); }
+            40%      { transform: translateX(8px); }
+            60%      { transform: translateX(-6px); }
+            80%      { transform: translateX(6px); }
+        }
+
+        .gate-btn {
+            width: 100%;
+            padding: 0.85rem;
+            border-radius: 0.6rem;
+            border: none;
+            background: #3b82f6;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s;
+        }
+
+        .gate-btn:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .gate-error {
+            font-size: 0.82rem;
+            color: #f87171;
+            margin-top: 0.75rem;
+            min-height: 1.1em;
+        }
+
+        .gate-session-info {
+            font-size: 0.75rem;
+            color: #475569;
+            margin-top: 1.5rem;
+        }
+
+        /* Blur main content when locked */
+        body.gate-locked > *:not(#pageGate) {
+            filter: blur(6px);
+            pointer-events: none;
+            user-select: none;
+        }
     </style>
 </head>
 
-<body>
+<body class="gate-locked">
+
+    <!-- ── Page Gate Lock Screen ── -->
+    <div id="pageGate">
+        <div class="gate-card">
+            <div class="gate-logo">Tech<span>xel</span></div>
+            <div class="gate-lock-icon">🔒</div>
+            <div class="gate-title">Protected Page</div>
+            <div class="gate-subtitle">Enter your password to access the software library.</div>
+            <input
+                type="password"
+                id="gatePassword"
+                class="gate-input"
+                placeholder="••••••••••"
+                autocomplete="current-password"
+                onkeydown="if(event.key==='Enter') gateUnlock()"
+            >
+            <button class="gate-btn" onclick="gateUnlock()">Unlock →</button>
+            <div class="gate-error" id="gateError"></div>
+            <div class="gate-session-info">Session expires after 30 minutes of inactivity.</div>
+        </div>
+    </div>
     <header>
         <div class="container nav-container">
             <a href="index.html" class="logo">Tech<span>xel</span></a>
@@ -408,6 +567,81 @@
     </footer>
 
     <script>
+        // ── Page Gate ────────────────────────────────────────────────
+        const GATE_KEY      = 'txl_sw_auth';   // localStorage key
+        const SESSION_MS    = 30 * 60 * 1000;  // 30 minutes
+        const CORRECT_PASS  = '3019964161';    // phone number
+
+        let inactivityTimer = null;
+
+        function gateIsAuthed() {
+            const ts = parseInt(localStorage.getItem(GATE_KEY) || '0', 10);
+            return ts && (Date.now() - ts) < SESSION_MS;
+        }
+
+        function gateStoreSession() {
+            localStorage.setItem(GATE_KEY, Date.now().toString());
+        }
+
+        function gateLock() {
+            localStorage.removeItem(GATE_KEY);
+            document.getElementById('pageGate').classList.remove('unlocked');
+            document.body.classList.add('gate-locked');
+            document.getElementById('gatePassword').value = '';
+            document.getElementById('gateError').textContent = '';
+            clearTimeout(inactivityTimer);
+        }
+
+        function gateOpen() {
+            document.getElementById('pageGate').classList.add('unlocked');
+            document.body.classList.remove('gate-locked');
+            resetInactivityTimer();
+            loadLicenses();
+        }
+
+        function gateUnlock() {
+            const input = document.getElementById('gatePassword');
+            const err   = document.getElementById('gateError');
+            if (input.value === CORRECT_PASS) {
+                gateStoreSession();
+                gateOpen();
+            } else {
+                err.textContent = 'Incorrect password. Please try again.';
+                input.classList.add('shake');
+                input.value = '';
+                setTimeout(() => input.classList.remove('shake'), 500);
+            }
+        }
+
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            gateStoreSession();  // refresh timestamp on activity
+            inactivityTimer = setTimeout(() => {
+                gateLock();
+                // Show a brief message when they return
+                document.getElementById('gateError').textContent =
+                    'Session expired after 30 minutes of inactivity.';
+            }, SESSION_MS);
+        }
+
+        // Track any user activity to reset the inactivity clock
+        ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll'].forEach(evt => {
+            document.addEventListener(evt, () => {
+                if (gateIsAuthed()) resetInactivityTimer();
+            }, { passive: true });
+        });
+
+        // On page load — check if still within an active session
+        if (gateIsAuthed()) {
+            gateOpen();
+        } else {
+            // Focus the password field automatically
+            window.addEventListener('DOMContentLoaded', () => {
+                document.getElementById('gatePassword').focus();
+            });
+        }
+        // ── End Gate ─────────────────────────────────────────────────
+
         // State
         let currentEditId = null;
         let originalValue = '';
@@ -561,8 +795,7 @@
             document.querySelector('#nav-list').classList.toggle('show');
         });
 
-        // Init
-        loadLicenses();
+        // Init — licenses are loaded by gateOpen() after authentication
     </script>
 </body>
 
