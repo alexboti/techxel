@@ -123,7 +123,7 @@ if (empty($_SESSION['authenticated'])) {
     tbody tr:hover { background: var(--surface2); }
 
     td { padding: 11px 16px; font-size: 0.88rem; vertical-align: middle; }
-    .td-actions { text-align: right; white-space: nowrap; width: 110px; }
+    .td-actions { text-align: right; white-space: nowrap; width: 140px; }
 
     .action-btn {
       display: inline-flex; align-items: center; justify-content: center;
@@ -134,6 +134,36 @@ if (empty($_SESSION['authenticated'])) {
     }
     .action-btn:hover.edit-btn  { border-color: var(--accent); color: var(--accent); background: rgba(59,130,246,0.1); }
     .action-btn:hover.del-btn   { border-color: var(--danger); color: var(--danger); background: var(--danger-bg); }
+
+    /* ── Ink status pill ── */
+    .ink-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 20px;
+      font-size: 0.75rem; font-weight: 600; white-space: nowrap;
+    }
+    .ink-ok  { background: var(--success-bg); color: var(--success); border: 1px solid rgba(34,197,94,0.25); }
+    .ink-low { background: var(--warn-bg);    color: var(--warn);    border: 1px solid rgba(245,158,11,0.25); }
+
+    /* ── Buy button ── */
+    .buy-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 11px; border-radius: 7px; font-size: 0.76rem; font-weight: 600;
+      background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.35);
+      color: #818cf8; cursor: pointer; text-decoration: none;
+      transition: all .15s; white-space: nowrap;
+    }
+    .buy-btn:hover { background: rgba(99,102,241,0.28); border-color: #818cf8; color: #a5b4fc; }
+
+    /* ── Ink toggle in edit mode ── */
+    .ink-toggle-wrap {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.84rem; color: var(--text);
+    }
+    .ink-toggle-wrap input[type=checkbox] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--warn); }
+
+    /* ── Edit form: url field label ── */
+    .edit-field-wrap { display: flex; flex-direction: column; gap: 4px; }
+    .edit-field-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing:.06em; }
 
     /* ── Inline editing ── */
     .edit-input {
@@ -230,6 +260,8 @@ if (empty($_SESSION['authenticated'])) {
             <th class="sortable" id="th-model" onclick="sortBy('model')">
               Printer Model <span class="sort-arrow" id="arrow-model">↕</span>
             </th>
+            <th>Ink Status</th>
+            <th>Purchase</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -247,7 +279,7 @@ if (empty($_SESSION['authenticated'])) {
 
   <script>
     const API = 'printers-api.php';
-    let printers  = [];   // [{ id, location, model }]
+    let printers  = [];   // [{ id, location, model, ink_low, purchase_url }]
     let editingId = null;
     let sortCol   = 'location';
     let sortDir   = 'asc';
@@ -379,10 +411,24 @@ if (empty($_SESSION['authenticated'])) {
       tr.dataset.id = p.id;
 
       if (editingId === p.id) {
-        // ── Edit mode ──
+        // ── Edit mode (5 columns, spans ink+purchase into one wide cell) ──
+        const inkChecked = p.ink_low ? 'checked' : '';
+        const purchaseVal = escHtml(p.purchase_url || '');
         tr.innerHTML = `
           <td><input class="edit-input" id="edit-location-${p.id}" value="${escHtml(p.location)}" placeholder="Location"></td>
-          <td><input class="edit-input" id="edit-model-${p.id}"    value="${escHtml(p.model)}"    placeholder="Printer model"></td>
+          <td><input class="edit-input" id="edit-model-${p.id}" value="${escHtml(p.model)}" placeholder="Printer model"></td>
+          <td colspan="2" style="min-width:260px">
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <label class="ink-toggle-wrap">
+                <input type="checkbox" id="edit-ink-${p.id}" ${inkChecked}>
+                <span>Ink needs replacement</span>
+              </label>
+              <div class="edit-field-wrap">
+                <span class="edit-field-label">Purchase link (optional)</span>
+                <input class="edit-input" id="edit-url-${p.id}" value="${purchaseVal}" placeholder="https://…" style="font-size:.8rem;">
+              </div>
+            </div>
+          </td>
           <td class="td-actions">
             <button class="btn btn-primary" style="padding:5px 12px;font-size:.78rem;" onclick="saveEdit('${p.id}')">Save</button>
             <button class="btn btn-ghost"   style="padding:5px 10px;font-size:.78rem;margin-left:4px;" onclick="cancelEdit()">✕</button>
@@ -390,9 +436,17 @@ if (empty($_SESSION['authenticated'])) {
         setTimeout(() => document.getElementById('edit-location-' + p.id)?.focus(), 30);
       } else {
         // ── View mode ──
+        const inkPill = p.ink_low
+          ? `<span class="ink-pill ink-low">⚠ Low</span>`
+          : `<span class="ink-pill ink-ok">✓ OK</span>`;
+        const buyBtn = p.purchase_url
+          ? `<a class="buy-btn" href="${escHtml(p.purchase_url)}" target="_blank" rel="noopener">🛒 Buy</a>`
+          : `<span style="color:var(--muted);font-size:.78rem;">—</span>`;
         tr.innerHTML = `
           <td>${escHtml(p.location)}</td>
           <td>${escHtml(p.model)}</td>
+          <td>${inkPill}</td>
+          <td>${buyBtn}</td>
           <td class="td-actions">
             <button class="action-btn edit-btn" title="Edit" onclick="startEdit('${p.id}')">✏️</button>
             <button class="action-btn del-btn"  title="Delete" onclick="deletePrinter('${p.id}', '${escHtml(p.location)}')" style="margin-left:5px;">🗑️</button>
@@ -414,7 +468,9 @@ if (empty($_SESSION['authenticated'])) {
       tr.className = 'add-row';
       tr.innerHTML = `
         <td><input class="add-input" id="add-location" placeholder="e.g. Trexler House" autocomplete="off"></td>
-        <td><input class="add-input" id="add-model"    placeholder="e.g. HP LaserJet Pro M404dn" autocomplete="off"></td>
+        <td><input class="add-input" id="add-model" placeholder="e.g. HP LaserJet Pro M404dn" autocomplete="off"></td>
+        <td></td>
+        <td></td>
         <td class="td-actions">
           <button class="btn btn-primary" style="padding:5px 12px;font-size:.78rem;" onclick="commitAdd()">Add</button>
           <button class="btn btn-ghost"   style="padding:5px 10px;font-size:.78rem;margin-left:4px;" onclick="hideAddRow()">✕</button>
@@ -457,10 +513,12 @@ if (empty($_SESSION['authenticated'])) {
     }
 
     async function saveEdit(id) {
-      const location = document.getElementById('edit-location-' + id)?.value.trim();
-      const model    = document.getElementById('edit-model-' + id)?.value.trim();
-      if (!location || !model) { showToast('Both fields are required.', true); return; }
-      const ok = await apiPost({ action: 'update', id, location, model });
+      const location     = document.getElementById('edit-location-' + id)?.value.trim();
+      const model        = document.getElementById('edit-model-' + id)?.value.trim();
+      const ink_low      = document.getElementById('edit-ink-' + id)?.checked || false;
+      const purchase_url = document.getElementById('edit-url-' + id)?.value.trim() || '';
+      if (!location || !model) { showToast('Both location and model are required.', true); return; }
+      const ok = await apiPost({ action: 'update', id, location, model, ink_low, purchase_url });
       if (ok) { editingId = null; showToast('Entry updated.'); }
     }
 

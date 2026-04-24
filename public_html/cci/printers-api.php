@@ -53,14 +53,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // ── Add ──────────────────────────────────────────────────────────────
     if ($action === 'add') {
-        $location = trim($input['location'] ?? '');
-        $model    = trim($input['model']    ?? '');
+        $location     = trim($input['location']     ?? '');
+        $model        = trim($input['model']        ?? '');
+        $ink_low      = !empty($input['ink_low']) ? true : false;
+        $purchase_url = trim($input['purchase_url'] ?? '');
         if (!$location || !$model) {
             http_response_code(400);
             echo json_encode(['success' => false, 'error' => 'location and model are required']);
             exit;
         }
-        $printers[] = ['id' => makeId(), 'location' => $location, 'model' => $model];
+        $printers[] = [
+            'id'           => makeId(),
+            'location'     => $location,
+            'model'        => $model,
+            'ink_low'      => $ink_low,
+            'purchase_url' => $purchase_url,
+        ];
         saveData($DATA_FILE, $printers);
         echo json_encode(['success' => true, 'printers' => array_values($printers)]);
         exit;
@@ -68,9 +76,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // ── Update ───────────────────────────────────────────────────────────
     if ($action === 'update') {
-        $id       = trim($input['id']       ?? '');
-        $location = trim($input['location'] ?? '');
-        $model    = trim($input['model']    ?? '');
+        $id           = trim($input['id']           ?? '');
+        $location     = trim($input['location']     ?? '');
+        $model        = trim($input['model']        ?? '');
+        $ink_low      = !empty($input['ink_low']) ? true : false;
+        $purchase_url = trim($input['purchase_url'] ?? '');
         if (!$id || !$location || !$model) {
             http_response_code(400);
             echo json_encode(['success' => false, 'error' => 'id, location and model are required']);
@@ -79,8 +89,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $found = false;
         foreach ($printers as &$p) {
             if ($p['id'] === $id) {
-                $p['location'] = $location;
-                $p['model']    = $model;
+                $p['location']     = $location;
+                $p['model']        = $model;
+                $p['ink_low']      = $ink_low;
+                $p['purchase_url'] = $purchase_url;
                 $found = true;
                 break;
             }
