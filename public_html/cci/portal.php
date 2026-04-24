@@ -139,6 +139,16 @@ if (empty($_SESSION['authenticated'])) {
            link-desc  – one-line description
     -->
 
+    <!-- Link 3: Printer Registry -->
+    <a class="link-card" href="printers.php">
+      <div class="link-icon orange">🖨️</div>
+      <div class="link-info">
+        <div class="link-title">Printer Registry</div>
+        <div class="link-desc">House printer model numbers & locations</div>
+      </div>
+      <span class="link-arrow">→</span>
+    </a>
+
   </div>
 
   <form class="logout-form" method="POST" action="logout.php">
